@@ -25,7 +25,7 @@
 <!--            <p th:if="${!strings.isEmpty(task.dueDate)}" th:text="${task.dueDate}"></p>-->
         </div>
         <div class="form-container">
-            <form action="/tasks" th:object="${Task}" method="post">
+            <form th:action="@{/tasks}" method="post">
                 <div>
                     <label for="title" class="label">Title</label>
                     <input type="text" class="text-input" id="title" name="title" required>

@@ -16,6 +16,7 @@ public class TaskController {
     @Autowired
     public TaskService ts;
 
+
     @GetMapping("/")
     public String index()
     {
@@ -41,13 +42,25 @@ public class TaskController {
         return this.ts.getTaskByID(taskID);
     }
 
-    @PostMapping("/tasks")
+    @PostMapping(path = "/tasks", consumes = "application/json")
     public String addTask(@RequestBody List<Task> tasks, BindingResult result, Model model)
     {
         model.addAttribute("taskList", tasks);
-        System.out.println(tasks.get(0).getTitle());
         if(!result.hasErrors()) {
             this.ts.addNewTask(tasks.get(0));
+            return "tasks";
+        }
+        return "tasks";
+    }
+
+    @PostMapping(path = "/tasks", consumes = "application/x-www-form-urlencoded")
+    public String addTask(Task task, BindingResult result, Model model)
+    {
+        List<Task> allTasks = this.ts.getAllTasks();
+        allTasks.add(task);
+        model.addAttribute("taskList", allTasks);
+        if(!result.hasErrors()) {
+            this.ts.addNewTask(task);
             return "tasks";
         }
         return "tasks";
