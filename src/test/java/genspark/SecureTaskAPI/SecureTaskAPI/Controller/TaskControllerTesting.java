@@ -15,9 +15,11 @@ import org.springframework.ui.Model;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class TaskControllerTesting {
@@ -60,10 +62,33 @@ public class TaskControllerTesting {
     public void testGetTasks() {
         System.out.println("TEST getTasks():");
 
+        // Case 1:
         String view = taskController.getTasks(model);
 
         verify(model).addAttribute("taskList", new ArrayList<Task>(){});
 
+        assert("tasks".equals(view));
+
+        // Case 2:
+        Task task1 = new Task(1,"task1","task1descrip",new Date(1001));
+        Task task2 = new Task(2, "task2", "task2descrip", new Date(1002));
+
+        List<Task> tasks = Arrays.asList(task1, task2);
+
+        when(taskService.getAllTasks()).thenReturn(tasks);
+        view = taskController.getTasks(model);
+        verify(model, times(1)).addAttribute("taskList", tasks);
+        assert("tasks".equals(view));
+
+        // Case 3:
+        Task task3 = new Task(3,"task3","task3descrip",new Date(1003));
+        Task task4 = new Task(4, "task4", "task4descrip", new Date(1004));
+
+        List<Task> tasks2 = Arrays.asList(task3, task4);
+
+        when(taskService.getAllTasks()).thenReturn(tasks2);
+        view = taskController.getTasks(model);
+        verify(model, times(1)).addAttribute("taskList", tasks2);
         assert("tasks".equals(view));
 
         System.out.println("TEST login() complete!");
@@ -80,6 +105,19 @@ public class TaskControllerTesting {
         assert(task1.equals(taskController.getSingleTask(1L)));
 
         System.out.println("TEST getSingleTask() complete!");
+    }
+
+    @Test
+    public void testDeleteTask() {
+        System.out.println("TEST deleteTask():");
+
+        Task task1 = new Task(1, "title", "descrip", new Date(1000));
+
+        String view = taskController.deleteTask(1L);
+
+        assert("tasks".equals(view));
+
+        System.out.println("TEST deleteTask() complete!");
     }
 
 }

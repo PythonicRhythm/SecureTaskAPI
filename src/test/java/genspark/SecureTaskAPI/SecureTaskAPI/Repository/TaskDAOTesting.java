@@ -51,13 +51,31 @@ public class TaskDAOTesting {
 
     @Test
     public void test_get_all_tasks() {
-        Task task1 = new Task(1, "title", "descrip", new Date(1000));
-        Task task2 = new Task(2, "title2", "descrip2", new Date(1002));
 
-//        given(taskDAO.save(task1)).willReturn(task1);
-//        assert(task1.equals(taskDAO.findAll()));
+        taskDAO.findAll();
+        verify(taskDAO, times(1)).findAll();
+
+        taskDAO.findAll();
+        verify(taskDAO, times(2)).findAll();
+
     }
-    //@Test
+
+    @Test
+    public void test_delete_by_id() {
+
+        Task task1 = new Task(1, "title", "descrip", new Date(1000));
+
+        // JPA returns void for deletions.
+
+        taskDAO.deleteById(1L);
+        verify(taskDAO, times(1)).deleteById(1L);
+
+        taskDAO.deleteById(2L);
+        verify(taskDAO, times(1)).deleteById(2L);
+
+        taskDAO.deleteById(1L);
+        verify(taskDAO, times(2)).deleteById(1L);
+    }
 
     //@Test
 
